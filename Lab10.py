@@ -1,4 +1,6 @@
 import random
+from PIL import Image, ImageDraw
+
 
 players = [
     ("LeBron James", random.randint(90, 99), random.randint(150, 200), "SF"),
@@ -169,35 +171,41 @@ def genetic_algorithm_NBA(iterations=1000, population_size=100):
     return best_solution
 
 
-# Finalmente, agregamos una función para visualizar el equipo en una "cancha de baloncesto":
 def visualize_team(team):
-    # Extendiendo el tamaño de las celdas para mejor visualización
-    court = [["          " for _ in range(3)] for _ in range(5)]
+    # Carga la imagen de la cancha
+    court_image = Image.open("cancha.jpg")  # Reemplaza "cancha.jpg" con la ruta de tu propia imagen
+
+    # Crea un objeto para dibujar en la imagen
+    draw = ImageDraw.Draw(court_image)
 
     positions = {
-        "PG": (4, 1),  # Point Guard al fondo en el centro
-        "SG": (3, 0),  # Shooting Guard detrás y a la izquierda
-        "SF": (3, 2),  # Small Forward detrás y a la derecha
-        "PF": (2, 0),  # Power Forward en el medio a la izquierda
-        "C": (2, 2),  # Center en el medio a la derecha
+        1: (130, 70),  # Ajusta las coordenadas según tu imagen
+        2: (50, 100),
+        3: (200, 100),
+        4: (50, 200),
+        5: (200, 200),
     }
 
-    for player in team:
-        position = player[3]
+    for i, player in enumerate(team):
+        position = i+1
         x, y = positions.get(position, (0, 0))  # Default pos if position is missing
         name = player[0]
-        # limit name to 8 characters for better fit
-        name = (name[:8] + "..") if len(name) > 8 else name
-        court[x][y] = name.center(10)  # Center the name in the cell
+        name = (name[:15] + "..") if len(name) > 15 else name
 
-    for row in court:
-        print(" | ".join(row))
-        print("-" * 35)
+        # Dibuja el jugador en la imagen
+        draw.text((x, y), name, fill=(0, 0, 0))  # Ajusta el color y la posición
+
+    # Muestra la imagen con los jugadores
+    court_image.show()
 
 
 # Probamos el algoritmo y visualizamos el equipo resultante:
 best_team = genetic_algorithm_NBA()
+
+# Ordena el best_team por las posiciones: PG, SG, SF, PF y C
+best_team_sorted = sorted(best_team, key=lambda x: (("PG", "SG", "SF", "PF", "C").index(x[3]), -x[1]))
+
 print("\nMejor equipo encontrado:")
-for player in best_team:
+for player in best_team_sorted:
     print(player)
-visualize_team(best_team)
+visualize_team(best_team_sorted)
