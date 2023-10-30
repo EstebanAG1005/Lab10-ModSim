@@ -1,3 +1,5 @@
+# Referencia de la idea https://medium.com/@gsquaredv/creating-a-profitable-daily-fantasy-sports-strategy-using-genetic-algorithms-and-free-data-15418ec0bd3d
+
 import random
 from PIL import Image, ImageDraw
 
@@ -173,7 +175,9 @@ def genetic_algorithm_NBA(iterations=1000, population_size=100):
 
 def visualize_team(team):
     # Carga la imagen de la cancha
-    court_image = Image.open("cancha.jpg")  # Reemplaza "cancha.jpg" con la ruta de tu propia imagen
+    court_image = Image.open(
+        "cancha.jpg"
+    )  # Reemplaza "cancha.jpg" con la ruta de tu propia imagen
 
     # Crea un objeto para dibujar en la imagen
     draw = ImageDraw.Draw(court_image)
@@ -187,7 +191,7 @@ def visualize_team(team):
     }
 
     for i, player in enumerate(team):
-        position = i+1
+        position = i + 1
         x, y = positions.get(position, (0, 0))  # Default pos if position is missing
         name = player[0]
         name = (name[:15] + "..") if len(name) > 15 else name
@@ -203,7 +207,9 @@ def visualize_team(team):
 best_team = genetic_algorithm_NBA()
 
 # Ordena el best_team por las posiciones: PG, SG, SF, PF y C
-best_team_sorted = sorted(best_team, key=lambda x: (("PG", "SG", "SF", "PF", "C").index(x[3]), -x[1]))
+best_team_sorted = sorted(
+    best_team, key=lambda x: (("PG", "SG", "SF", "PF", "C").index(x[3]), -x[1])
+)
 
 print("\nMejor equipo encontrado:")
 for player in best_team_sorted:
